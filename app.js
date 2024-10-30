@@ -27,6 +27,7 @@ function displayProducts(productsToDisplay) {
         productCard.innerHTML = `
             <img src="${product.image}" alt="${product.title}" />
             <h4>${product.title.length > 100 ? product.title.substring(0, 100) + '...' : product.title}</h4>
+            <p>${product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description}</p>
             <p>$${product.price}</p>
         `;
         productList.appendChild(productCard);
