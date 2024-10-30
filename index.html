@@ -3,27 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Store</title>
+    <title>Product List</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
-        <nav>
-            <input type="search" id="search-bar" placeholder="Search products">
-            <button id="search-button">Search</button>
-        </nav>
+        <div class="header-left">
+            <h1>Vishaka</h1>
+        </div>
+        <div class="header-right">
+            <a href="#">Home</a>
+            <a href="#">Orders</a>
+            <a href="#">Wishlist</a>
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
     </header>
-
-    <main id="product-list">
-        <!-- Products will be loaded here -->
-    </main>
-
-    <button id="load-more">Load More</button>
-
+    <div class="container">
+        <div id="sidebar">
+            <h2>Filters</h2>
+            <div class="filter-section">
+                <h3>Categories</h3>
+                <ul>
+                    <li class="category-item active" data-category="all">All</li>
+                    <li class="category-item" data-category="electronics">Electronics</li>
+                    <li class="category-item" data-category="jewelery">Jewelery</li>
+                    <li class="category-item" data-category="men's clothing">Men's Clothing</li>
+                    <li class="category-item" data-category="women's clothing">Women's Clothing</li>
+                </ul>
+            </div>
+            <div class="filter-section">
+                <h3>Price Range</h3>
+                <input type="range" id="price-range" min="0" max="1000" step="10" value="500">
+                <span id="price-value">$500</span>
+            </div>
+            <div class="filter-section">
+                <h3>Sort By</h3>
+                <select id="sort-options">
+                    <option value="default">Default</option>
+                    <option value="low-to-high">Price: Low to High</option>
+                    <option value="high-to-low">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+        <div id="main-content">
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <input type="text" id="search-bar" placeholder="Search for products..." />
+                    <span class="search-line"></span>
+                </div>
+            </div>
+            <div id="product-list"></div>
+            <button id="load-more">Load More</button>
+        </div>
+    </div>
     <footer>
-        <p>&copy; 2024 Product Store</p>
+        <p>&copy; 2024 Vishaka. All rights reserved.</p>
     </footer>
-
     <script src="app.js"></script>
 </body>
 </html>
