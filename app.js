@@ -1,73 +1,115 @@
-const productContainer = document.getElementById('product-list');
-const loadMoreButton = document.getElementById('load-more');
-const searchButton = document.getElementById('search-button');
-const searchBar = document.getElementById('search-bar');
-let products = [];
-let itemsPerPage = 10;
-let currentPage = 1;
+// app.js
 
-// Fetch Products
+const API_URL = 'https://fakestoreapi.com/products';
+let products = [];
+let filteredProducts = [];
+let displayedProductsCount = 10;
+
+// Fetch products from API
 async function fetchProducts() {
     try {
-        const response = await fetch('https://fakestoreapi.com/products');
-        if (!response.ok) throw new Error('Failed to fetch products');
+        const response = await fetch(API_URL);
         products = await response.json();
-        displayProducts(currentPage);
+        filteredProducts = products; // Initially set filtered products to all products
+        displayProducts(filteredProducts.slice(0, displayedProductsCount));
     } catch (error) {
         console.error('Error fetching products:', error);
-        productContainer.innerHTML = '<p>Error loading products. Please try again later.</p>';
     }
 }
 
-// Display Products
-function displayProducts(page) {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = page * itemsPerPage;
-    const productSlice = products.slice(startIndex, endIndex);
-
-    productSlice.forEach(product => {
+// Display products on the page
+function displayProducts(productsToDisplay) {
+    const productList = document.getElementById('product-list');
+    productList.innerHTML = ''; // Clear existing products
+    productsToDisplay.forEach(product => {
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
         productCard.innerHTML = `
-            <img src="${product.image}" alt="${product.title}" loading="lazy">
-            <h3>${product.title}</h3>
+            <img src="${product.image}" alt="${product.title}" />
+            <h4>${product.title.length > 100 ? product.title.substring(0, 100) + '...' : product.title}</h4>
             <p>$${product.price}</p>
-            <p>${product.description.substring(0, 100)}...</p>
         `;
-        productContainer.appendChild(productCard);
+        productList.appendChild(productCard);
     });
 }
 
-// Lazy Load Products
-loadMoreButton.addEventListener('click', () => {
-    currentPage++;
-    displayProducts(currentPage);
-});
+// Load more products
+function loadMoreProducts() {
+    displayedProductsCount += 10; // Increase the count
+    const moreProducts = filteredProducts.slice(0, displayedProductsCount);
+    displayProducts(moreProducts);
 
-// Search Functionality
-searchButton.addEventListener('click', () => {
-    const searchTerm = searchBar.value.toLowerCase();
-    const filteredProducts = products.filter(product => 
-        product.title.toLowerCase().includes(searchTerm) ||
-        product.description.toLowerCase().includes(searchTerm)
-    );
-    productContainer.innerHTML = ''; // Clear the product list
-    displayFilteredProducts(filteredProducts);
-});
-
-function displayFilteredProducts(filteredProducts) {
-    filteredProducts.forEach(product => {
-        const productCard = document.createElement('div');
-        productCard.className = 'product-card';
-        productCard.innerHTML = `
-            <img src="${product.image}" alt="${product.title}" loading="lazy">
-            <h3>${product.title}</h3>
-            <p>$${product.price}</p>
-            <p>${product.description.substring(0, 100)}...</p>
-        `;
-        productContainer.appendChild(productCard);
-    });
+    // Disable button if all products are displayed
+    const loadMoreButton = document.getElementById('load-more');
+    if (displayedProductsCount >= filteredProducts.length) {
+        loadMoreButton.disabled = true; // Disable button
+        loadMoreButton.textContent = 'No More Products'; // Update button text
+    }
 }
 
-// Initial fetch
-fetchProducts();
+// Filter products by category
+function filterProductsByCategory(category) {
+    if (category === 'all') {
+        filteredProducts = products;
+    } else {
+        filteredProducts = products.filter(product => product.category === category);
+    }
+    displayedProductsCount = 10; // Reset displayed count
+    loadMoreProducts(); // Reload products
+}
+
+// Sort products
+function sortProducts(order) {
+    if (order === 'low-to-high') {
+        filteredProducts.sort((a, b) => a.price - b.price);
+    } else if (order === 'high-to-low') {
+        filteredProducts.sort((a, b) => b.price - a.price);
+    }
+    displayedProductsCount = 10; // Reset displayed count
+    loadMoreProducts(); // Reload products
+}
+
+// Search products
+function searchProducts(event) {
+    const searchTerm = event.target.value.toLowerCase();
+    filteredProducts = products.filter(product => product.title.toLowerCase().includes(searchTerm));
+    displayedProductsCount = 10; // Reset displayed count
+    loadMoreProducts(); // Reload products
+}
+
+// Price Range Filter Functionality
+function filterProductsByPrice(range) {
+    const maxPrice = range; // Get the max price from the slider
+    filteredProducts = products.filter(product => product.price <= maxPrice);
+    displayedProductsCount = 10; // Reset displayed count
+    loadMoreProducts(); // Reload products
+}
+
+// Update the displayed price value
+document.getElementById('price-range').addEventListener('input', (event) => {
+    const priceValueElement = document.getElementById('price-value');
+    const rangeValue = event.target.value;
+    priceValueElement.textContent = `$${rangeValue}`; // Update displayed value
+    filterProductsByPrice(rangeValue); // Filter products based on selected price range
+});
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', fetchProducts);
+document.getElementById('load-more').addEventListener('click', loadMoreProducts);
+document.querySelectorAll('.category-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+        document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+        e.currentTarget.classList.add('active'); // Highlight active category
+        filterProductsByCategory(e.currentTarget.dataset.category);
+    });
+});
+document.getElementById('sort-options').addEventListener('change', (e) => {
+    sortProducts(e.target.value);
+});
+document.getElementById('search-bar').addEventListener('keyup', searchProducts);
+
+// Toggle sidebar for mobile view
+document.getElementById('hamburger').addEventListener('click', () => {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('sidebar-active');
+});
