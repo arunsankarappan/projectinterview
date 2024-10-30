@@ -1,47 +1,157 @@
-/* Base Styles for Mobile */
+/* Base Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
+/* Header */
 header {
     background-color: #333;
     color: white;
-    padding: 10px;
+    padding: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-#search-bar {
-    padding: 5px;
-    font-size: 16px;
+.header-left h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #FFD700;
 }
 
-#search-button {
-    padding: 5px 10px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-#product-list {
+.header-right {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
-}
-
-.product-card {
-    border: 1px solid #ddd;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
+.header-right a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.header-right a:hover {
+    color: #FFD700;
+}
+
+.hamburger {
+    cursor: pointer;
+    display: none; /* Hidden by default */
+}
+
+/* Container Layout */
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sidebar and Product Grid */
+#sidebar {
+    display: none; /* Hidden on small screens */
+}
+
+@media screen and (min-width: 768px) {
+    .container {
+        flex-direction: row;
+    }
+
+    #sidebar {
+        display: block;
+        width: 250px;
+        padding: 20px;
+        background-color: #f5f5f5;
+    }
+
+    #main-content {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 250px);
+    }
+
+    #product-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-evenly;
+        padding: 20px;
+    }
+
+    .product-card {
+        width: 22%;
+        border: 1px solid #ddd;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background-color: white;
+        text-align: center;
+    }
+}
+
+/* Mobile and Tablet styles */
+@media screen and (max-width: 767px) {
+    #sidebar {
+        
+        width: 90%; /* Full width on mobile */
+        padding: 15px;
+    }
+
+    #main-content {
+        width: 100%;
+        padding: 0;
+    }
+
+    #product-list {
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        padding: 10px;
+    }
+
+    .product-card {
+        width: 90%; /* Full width for mobile */
+        margin-bottom: 10px; /* Space between products */
+    }
+
+    .hamburger {
+        display: block; /* Show hamburger menu on mobile */
+        margin-left: auto; /* Align to the right */
+    }
+    .sidebar-active {
+        display: block!important; /* Show sidebar when active */
+        position: absolute;
+        top: 60px; /* Below the header */
+        left: 0;
+        width: 250px;
+        background-color: #f5f5f5;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 100; /* Ensure it's on top */
+    }
+}
+
+/* Style for Price Range */
+#price-range {
+    width: 100%;
+}
+
+#price-value {
+    font-weight: bold;
+}
+
+/* Category Menu */
+.category-item {
+    cursor: pointer;
+    padding: 5px 0;
+    display: block;
+}
+
+.category-item:hover,
+.category-item.active {
+    color: #007BFF;
+    font-weight: bold;
+}
+
+/* Load More Button */
 button {
     padding: 10px;
     background-color: #007BFF;
@@ -49,50 +159,51 @@ button {
     border: none;
     cursor: pointer;
     font-size: 16px;
+    display: block;
+    margin: 20px auto;
 }
 
-/* Tablet */
-@media screen and (min-width: 768px) {
-    #product-list {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    .product-card {
-        width: 45%;
-    }
+/* Search Container with Animation */
+.search-container {
+    display: flex;
+    justify-content: flex-end; /* Align search to the right */
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
-/* Desktop */
-@media screen and (min-width: 1024px) {
-    #product-list {
-        justify-content: space-evenly;
-    }
-
-    .product-card {
-        width: 30%;
-    }
-}
-img {
-  width: 100%;
+#search-bar {
+    padding: 8px;
+    font-size: 16px;
+    transition: transform 0.2s;
+    width: 80%;
+    max-width: 600px;
 }
 
-/* Shimmer effect for loading */
-.shimmer {
-    background-color: #f6f7f8;
-    background-image: linear-gradient(90deg, #f6f7f8 25%, #eaeaea 50%, #f6f7f8 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-    height: 200px;
-    width: 100%;
+#search-bar:focus {
+    transform: scale(1.05);
+    outline: none;
 }
 
-@keyframes loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
+/* Product Card Styling */
+.product-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    text-align: center;
+    transition: transform 0.3s ease;
+    overflow: hidden; /* Ensure the zoomed image doesn't overflow */
+    cursor: pointer; /* Changes cursor to hand on hover */
+}
+
+/* Product Image Styling without Cropping */
+.product-card img {
+    max-width: 100%;
+    max-height: 150px; /* Set a max height to keep uniformity */
+    transition: transform 0.3s ease; /* Smooth zoom-in effect */
+}
+
+/* Zoom in image on hover */
+.product-card:hover img {
+    transform: scale(1.1); /* Zoom in the image */
 }
